@@ -1,0 +1,63 @@
+name: Selenium CI
+
+# ── Triggers ─────────────────────────────────────────────────────────────────
+on:
+  push:
+    branches: [ main, master ]        # run on every push to main/master
+  pull_request:
+    branches: [ main, master ]        # run on every PR targeting main/master
+  schedule:
+    - cron: "0 21 * * *"              # nightly at 9 PM UTC (2:30 AM IST)
+  workflow_dispatch:                  # allow manual trigger from GitHub UI
+
+# ── Jobs ──────────────────────────────────────────────────────────────────────
+jobs:
+  selenium-tests:
+    name: Run Selenium Tests
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # 1. Check out the repository code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Install JDK 8 and cache the local Maven repository
+      - name: Set up JDK 8
+        uses: actions/setup-java@v4
+        with:
+          java-version: "8"
+          distribution: "temurin"
+          cache: maven               # caches ~/.m2 between runs automatically
+
+      # 3. Install a pinned version of Google Chrome
+      - name: Set up Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      # 4. Print Chrome version to the log for traceability
+      - name: Print Chrome version
+        run: google-chrome --version
+
+      # 5. Run the full test suite via Maven
+      #    GitHub Actions sets CI=true automatically, which tells basetest.java
+      #    to launch Chrome in headless mode — no display server needed.
+      - name: Run Selenium tests
+        run: mvn test --no-transfer-progress
+
+      # 6. Always upload the TestNG HTML/XML reports as a downloadable artifact
+      - name: Upload TestNG reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testng-reports-${{ github.run_number }}
+          path: test-output/
+          retention-days: 30
+
+      # 7. Upload failure screenshots only when the job failed
+      - name: Upload failure screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failure-screenshots-${{ github.run_number }}
+          path: test-output/screenshots/
+          retention-days: 7
