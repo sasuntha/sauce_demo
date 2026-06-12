@@ -27,8 +27,9 @@ public class orderhistorytest extends basetest {
 
         driver.findElement(By.xpath(loc.getProperty("signin_button"))).click();
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath(loc.getProperty("logout_button"))));
+        // Wait for Shopify to redirect away from /account/login to /account
+        wait.until(ExpectedConditions.not(
+                ExpectedConditions.urlContains("/account/login")));
     }
 
     @Test
