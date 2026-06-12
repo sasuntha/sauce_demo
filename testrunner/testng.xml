@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="SauceDemoSuite" verbose="1">
+
+  <test name="Registration">
+    <classes>
+      <class name="testcase.registertest"/>
+    </classes>
+  </test>
+
+  <test name="Login">
+    <classes>
+      <class name="testcase.logintest"/>
+    </classes>
+  </test>
+
+  <test name="ProductSearch">
+    <classes>
+      <class name="testcase.productsearchtest"/>
+    </classes>
+  </test>
+
+  <test name="AddToCart">
+    <classes>
+      <class name="testcase.addtocarttest"/>
+    </classes>
+  </test>
+
+  <test name="Checkout">
+    <classes>
+      <class name="testcase.checkouttest"/>
+    </classes>
+  </test>
+
+  <test name="Payment">
+    <classes>
+      <class name="testcase.paymenttest"/>
+    </classes>
+  </test>
+
+  <test name="OrderHistory">
+    <classes>
+      <class name="testcase.orderhistorytest"/>
+    </classes>
+  </test>
+
+</suite>
